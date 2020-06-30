@@ -10,7 +10,7 @@ function operateData (sql, param) {
       // 数据库的端口
       port: 3307,
       // 数据库名称
-      database: 'mydb',
+      database: 'bigeventapi',
       // 数据库账号
       user: 'root',
       // 数据库密码
