@@ -24,6 +24,7 @@ router.post('/login', async (req, res) => {
     // 2、加密唯一标识（加密的干扰字符串）
     // 3、加密配置选项（可以设置token的有效期）
     // jwt要求在token字符串之前添加一个Bearer 特殊标识 
+    // Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRvbSIsImlkIjo4LCJpYXQiOjE1OTM1ODc2MzgsImV4cCI6MTU5MzU5MTIzOH0.UHnhiaOgW7LYR7txwdkqCkVY_kucjabamPHWUDWsCh0
     let token = jwt.sign({
       username: param.username,
       id: ret[0].id
