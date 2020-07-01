@@ -3,6 +3,7 @@
 */
 const express = require('express')
 const path = require('path')
+const utils = require('utility')
 const db = require(path.join(__dirname, '../common/db.js'))
 const router = express.Router()
 
@@ -15,6 +16,8 @@ router.post('/reguser', async (req, res) => {
   // 获取前端传递过来的参数
   // { username: 'tom', password: 'tom' }
   let param = req.body
+  // 对客户端传递过来的密码加密后再进行数据库的插入操作
+  param.password = utils.md5(req.body.password)
   // 调用数据库相关的方法进行数据的添加操作
   let sql = 'insert into user set ?'
   let ret = await db.operateData(sql, param)
