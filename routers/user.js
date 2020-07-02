@@ -81,8 +81,27 @@ router.post('/updatepwd', async (req, res) => {
   }
 })
 
-router.post('/update/avatar', (req, res) => {
-  res.send('update/avatar')
+// 更新头像
+router.post('/update/avatar', async (req, res) => {
+  // 获取请求参数
+  let param = req.body
+  // 获取用户的id
+  let id = req.user.id
+  // 更新数据库
+  let sql = 'update user set user_pic = ? where id = ?'
+  let ret = await db.operateData(sql, [param.avatar, id])
+  // 处理响应
+  if (ret && ret.affectedRows > 0) {
+    res.json({
+      status: 0,
+      message: '更新头像成功！'
+    })
+  } else {
+    res.json({
+      status: 1,
+      message: '更新头像失败！'
+    })
+  }
 })
 
 module.exports = router
