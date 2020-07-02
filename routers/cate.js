@@ -68,12 +68,47 @@ router.get('/deletecate/:id', async (req, res) => {
   }
 })
 
-router.get('/cates/:id', (req, res) => {
-  res.send('/cates/:id')
+// 根据id查询分类的详情
+router.get('/cates/:id', async (req, res) => {
+  // 获取分类的id
+  let id = req.params.id
+  // 数据库操作
+  let sql = 'select * from category where id = ?'
+  let ret = await db.operateData(sql, id)
+  if (ret && ret.length > 0) {
+    res.json({
+      status: 0,
+      message: '查询分类信息成功！',
+      data: ret[0]
+    })
+  } else {
+    res.json({
+      status: 1,
+      message: '查询分类信息失败！'
+    })
+  }
 })
 
-router.post('/updatecate', (req, res) => {
-  res.send('/updatecate')
+// 更新分类
+router.post('/updatecate', async (req, res) => {
+  // 获取请求参数
+  let param = req.body
+  console.log(param)
+  // 数据库操作
+  let sql = 'update category set ? where Id = ?'
+  let ret = await db.operateData(sql, [{name: param.name, alias: param.alias}, param.Id])
+  // 响应请求
+  if (ret && ret.affectedRows > 0) {
+    res.json({
+      status: 0,
+      message: '更新分类成功！'
+    })
+  } else {
+    res.json({
+      status: 1,
+      message: '更新分类失败！'
+    })
+  }
 })
 
 module.exports = router

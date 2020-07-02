@@ -30,6 +30,15 @@ app.use('/api', loginRouter)
 app.use('/my', userRouter)
 app.use('/my/article', cateRouter)
 
+// 统一处理不存在的路由
+// app.all表示处理所有形式的请求（get/post/put/delete...）
+app.all('*', (req, res) => {
+  res.status(404).json({
+    status: 404,
+    message: '请求额资源不存在！'
+  })
+})
+
 // 添加一个中间件，统一处理异常信息
 app.use((err, req, res, next) => {
   if (err.status === 401) {
