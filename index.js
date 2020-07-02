@@ -5,6 +5,7 @@ const jwt = require('express-jwt')
 const loginRouter = require(path.join(__dirname, 'routers/login.js'))
 const userRouter = require(path.join(__dirname, 'routers/user.js'))
 const cateRouter = require(path.join(__dirname, 'routers/cate.js'))
+const articleRouter = require(path.join(__dirname, 'routers/article.js'))
 const app = express()
 
 // 处理客户端请求post参数
@@ -29,6 +30,7 @@ app.use(jwt({secret: 'bigevent'}).unless({path: /^\/api/}))
 app.use('/api', loginRouter)
 app.use('/my', userRouter)
 app.use('/my/article', cateRouter)
+app.use('/my/article', articleRouter)
 
 // 统一处理不存在的路由
 // app.all表示处理所有形式的请求（get/post/put/delete...）
