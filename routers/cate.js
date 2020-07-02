@@ -93,8 +93,8 @@ router.get('/cates/:id', async (req, res) => {
 router.post('/updatecate', async (req, res) => {
   // 获取请求参数
   let param = req.body
-  console.log(param)
   // 数据库操作
+  // SQL语句中不区分大小写，但是参数的名称区分大小写
   let sql = 'update category set ? where Id = ?'
   let ret = await db.operateData(sql, [{name: param.name, alias: param.alias}, param.Id])
   // 响应请求
