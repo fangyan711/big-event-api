@@ -3,6 +3,7 @@
 */
 const express = require('express')
 const router = express.Router()
+const utils = require('utility')
 const path = require('path')
 const db = require(path.join(__dirname, '../common/db.js'))
 
@@ -33,12 +34,51 @@ router.get('/userinfo', async (req, res) => {
 })
 
 // 更新用户信息
-router.post('/userinfo', (req, res) => {
-  res.send('update userinfo')
+router.post('/userinfo', async (req, res) => {
+  // 获取请求参数
+  let param = req.body
+  // 更新用户的信息
+  let sql = 'update user set ? where id = ?'
+  // 如果是增删改操作，那么返回对象；如果是查询，那么返回数组
+  let ret = await db.operateData(sql, [{nickname: param.nickname, email: param.email}, param.id])
+  // 处理响应状态
+  if (ret && ret.affectedRows > 0) {
+    res.json({
+      status: 0,
+      message: '修改用户信息成功！'
+    })
+  } else {
+    res.json({
+      status: 1,
+      message: '修改用户信息失败！'
+    })
+  }
 })
 
-router.post('/updatepwd', (req, res) => {
-  res.send('updatepwd')
+// 更新密码
+router.post('/updatepwd', async (req, res) => {
+  // 获取请求参数
+  let param = req.body
+  // 对密码进行加密处理
+  param.oldPwd = utils.md5(param.oldPwd)
+  param.newPwd = utils.md5(param.newPwd)
+  // 获取用户的id
+  let id = req.user.id
+  // 调用数据库方法进行更新操作
+  let sql = 'update user set password = ? where id = ? and password = ?'
+  let ret = await db.operateData(sql, [param.newPwd, id, param.oldPwd])
+  // 响应返回状态
+  if (ret && ret.affectedRows > 0) {
+    res.json({
+      status: 0,
+      message: '更新密码成功！'
+    })
+  } else {
+    res.json({
+      status: 1,
+      message: '更新密码失败！'
+    })
+  }
 })
 
 router.post('/update/avatar', (req, res) => {
