@@ -128,13 +128,60 @@ router.get('/:id', async (req, res) => {
 })
 
 // 更新文章
-router.post('/edit', (req, res) => {
-  res.send('edit')
+router.post('/edit', async (req, res) => {
+  // 获取文章相关的参数
+  let param = req.body
+  // 操作数据库
+  let sql = 'update article set ? where id = ?'
+  let ret = await db.operateData(sql, [{
+    title: param.title,
+    cate_id: param.cate_id,
+    content: param.content,
+    cover_img: param.cover_img,
+    state: param.state
+  }, param.Id])
+  if (ret && ret.affectedRows > 0) {
+    res.json({
+      status: 0,
+      message: '更新文章成功！'
+    })
+  } else {
+    res.json({
+      status: 1,
+      message: '更新文章失败！'
+    })
+  }
 })
 
 // 发布文章
-router.post('/add', (req, res) => {
-  res.send('add')
+router.post('/add', async (req, res) => {
+  // 获取文章相关的参数
+  let param = req.body
+  // 获取用户id
+  let id = req.user.id
+  // 操作数据库
+  let sql = 'insert into article set ?'
+  let ret = await db.operateData(sql, {
+    title: param.title,
+    cate_id: param.cate_id,
+    content: param.content,
+    cover_img: param.cover_img,
+    state: param.state,
+    is_delete: 0,
+    author_id: id,
+    pub_date: new Date()
+  })
+  if (ret && ret.affectedRows > 0) {
+    res.json({
+      status: 0,
+      message: '添加文章成功！'
+    })
+  } else {
+    res.json({
+      status: 1,
+      message: '添加文章失败！'
+    })
+  }
 })
 
 module.exports = router
