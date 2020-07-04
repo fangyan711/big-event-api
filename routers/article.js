@@ -52,17 +52,25 @@ router.get('/list', async (req, res) => {
   // condition = cate_id = 1 and state = '草稿' and
   // 去掉最后一个and 
   condition = condition.substring(0, condition.lastIndexOf('and'))
-
   let sql = 'select * from article limit ?, ?'
+  // 查询列表总数
+  let totalSql = 'select count(*) as total from article'
   if (condition) {
     sql = 'select * from article where ' + condition + ' limit ?, ?'
+    // 携带条件时查询总数
+    totalSql = 'select count(*) as total from article where ' + condition
   }
+  // 查询列表数据
   let ret = await db.operateData(sql, [param.pagesize * (param.pagenum - 1), param.pagesize])
+  // 查询列表总数
+  let cret = await db.operateData(totalSql)
+  
   if (ret && ret.length > 0) {
     res.json({
       status: 0,
       message: '查询文章列表数据成功！',
-      data: ret
+      data: ret,
+      total: cret[0].total
     })
   } else {
     res.json({
