@@ -130,16 +130,18 @@ router.get('/:id', async (req, res) => {
 })
 
 // 更新文章
-router.post('/edit', async (req, res) => {
+router.post('/edit', upload.single('cover_img'), async (req, res) => {
   // 获取文章相关的参数
   let param = req.body
+  // 上传文章封面额路径
+  let filePath = '/uploads/' + req.file.filename
   // 操作数据库
   let sql = 'update article set ? where id = ?'
   let ret = await db.operateData(sql, [{
     title: param.title,
     cate_id: param.cate_id,
     content: param.content,
-    cover_img: param.cover_img,
+    cover_img: filePath,
     state: param.state
   }, param.Id])
   if (ret && ret.affectedRows > 0) {
