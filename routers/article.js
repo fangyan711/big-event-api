@@ -3,6 +3,8 @@
 */
 const express = require('express')
 const path = require('path')
+const multer = require('multer')
+const upload = multer({dest: path.join(__dirname, '../uploads')})
 const db = require(path.join(__dirname, '../common/db.js'))
 const router = express.Router()
 
@@ -154,18 +156,20 @@ router.post('/edit', async (req, res) => {
 })
 
 // 发布文章
-router.post('/add', async (req, res) => {
+router.post('/add', upload.single('cover_img'), async (req, res) => {
   // 获取文章相关的参数
   let param = req.body
   // 获取用户id
   let id = req.user.id
+  // 获取上传文件的路径
+  let filePath = '/uploads/' + req.file.filename
   // 操作数据库
   let sql = 'insert into article set ?'
   let ret = await db.operateData(sql, {
     title: param.title,
     cate_id: param.cate_id,
     content: param.content,
-    cover_img: param.cover_img,
+    cover_img: filePath,
     state: param.state,
     is_delete: 0,
     author_id: id,
